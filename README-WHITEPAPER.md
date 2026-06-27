@@ -1,8 +1,8 @@
 # The Combined Agent-Memory Stack
-### How TDAI, STRATUS, and UMP work together to give long-lived AI agents durable, cross-agent memory
+### How TDAI, Falda, and UMP work together to give long-lived AI agents durable, cross-agent memory
 
 *White paper — Rick Stevens (Argonne National Laboratory). Compiled by Ollie, 2026-06-25.*
-*Companion to: ARCHITECTURE_BRIEF.md (ground truth), SYSTEM-SPEC-1000-AGENTS.md (engineering spec), the TDAI/STRATUS decks, and the UMP reference repo.*
+*Companion to: ARCHITECTURE_BRIEF.md (ground truth), SYSTEM-SPEC-1000-AGENTS.md (engineering spec), the TDAI/Falda decks, and the UMP reference repo.*
 
 ---
 
@@ -16,7 +16,7 @@ completed work from scratch. The combined stack solves this with three cooperati
 1. **TDAI** — the **live production memory runtime**. A four-layer (L0->L1->L2->L3) local
    capture/distill/recall pipeline running as an OpenClaw plugin on each host. It is the only
    system currently in the agents' live prompt path.
-2. **STRATUS** — a **born-clean, US-origin standalone** re-implementation of the same
+2. **Falda** — a **born-clean, US-origin standalone** re-implementation of the same
    four-layer design, hardened for multi-tenant scale (1,000 agents). It currently runs in
    **shadow mode** alongside TDAI (evidence-gated, reversible) and is the planned successor.
 3. **UMP** — a lightweight, **schema-first cross-agent reference store** (JSONL + CLI + HTTP)
@@ -49,9 +49,9 @@ counterpart to the technical stack.
 
 ---
 
-## 2. The four-layer model (shared by TDAI and STRATUS)
+## 2. The four-layer model (shared by TDAI and Falda)
 
-Both TDAI and STRATUS implement the same conceptual pipeline. Raw conversation flows in at L0
+Both TDAI and Falda implement the same conceptual pipeline. Raw conversation flows in at L0
 and is progressively distilled into higher-value, lower-volume representations:
 
 | Layer | Name | What it holds | How it is produced |
@@ -84,7 +84,7 @@ on both hosts. It is the **only system in the agents' live prompt path today.**
 - `conversations/` — L0 daily JSONL
 - `records/` — L1 daily JSONL
 - `scene_blocks/*.md` — L2 scenes (e.g. AI-Benchmark-Operations, Paper-Replication-Project,
-  STRATUS-Memory-System-Stewardship)
+  Falda-Memory-System-Stewardship)
 - `vectors.db` — SQLite + `sqlite-vec` vector DB (~46 MB live)
 - `persona.md` — L3 persona (~42 KB live)
 - `.metadata/` (manifest + checkpoints), `.backup/` (rolling)
@@ -96,21 +96,21 @@ the free on-prem Argo/ALCF endpoints.
 
 **Multi-tenant status:** TDAI's local plugin has been run multi-store (maxStores~1000, several
 live instances), but it is fundamentally **single-tenant per store** (one dbPath / blob dir).
-True fleet-scale multi-tenancy is a STRATUS concern (§4, §5).
+True fleet-scale multi-tenancy is a Falda concern (§4, §5).
 
 **Why replace it:** the package is Chinese-origin (authored by the "TencentDB Agent Memory
 Team," Chinese-dominant README, jieba tokenizer, optional Tencent COS/TCVDB). For a
-US-government-adjacent deployment we want a **born-clean US-origin** equivalent — hence STRATUS.
+US-government-adjacent deployment we want a **born-clean US-origin** equivalent — hence Falda.
 The coupling is narrow (~2 Tencent npm packages + ~6 source files behind a single
 `IMemoryStore` interface + the jieba tokenizer), so the rebuild is adapter-and-deploy work, not
 a ground-up rewrite.
 
 ---
 
-## 4. Layer B — STRATUS (the born-clean successor)
+## 4. Layer B — Falda (the born-clean successor)
 
 **What it is:** a public, Apache-2.0, **clean-room US-origin standalone** of the same
-four-layer system — *not* a fork carrying history. Repo: `rick-stevens-ai/stratus`. Ollie is
+four-layer system — *not* a fork carrying history. Repo: `rick-stevens-ai/falda`. Ollie is
 steward-of-record (his full-scope classic PAT has push authority; he also validates
 origin-clean on Kukla's commits).
 
@@ -122,22 +122,22 @@ Node 26 prebuilds; 13/13 smoke green.
 references to tencent/tdai/alibaba/repatriation/china/tcvdb/jieba (`git grep` == 0). This
 constrains only the public repo, not internal memory/diary notes.
 
-**Multi-tenant design (approved):** STRATUS adds two-axis `(tenant, pool)` addressing on every
+**Multi-tenant design (approved):** Falda adds two-axis `(tenant, pool)` addressing on every
 operation, with **store-per-(tenant,pool) physical isolation** (each tenant+pool = its own
 SQLite file + blob dir) chosen over column-tagged filtering. `tenant` = required agent
 identity; default private pool = `self` (TDAI parity); opt-in named pools allow sharing with
 per-member access modes (none / read / readwrite). Strict isolation; scoped single-target
 recall.
 
-**Shadow-mode dual-run (Rick-approved, one week):** STRATUS runs alongside TDAI on **both
+**Shadow-mode dual-run (Rick-approved, one week):** Falda runs alongside TDAI on **both
 hosts as two independent deployments** — Kukla/m1 (launchd gateway + tap, 560-turn backfill)
 and Ollie/CherryRd (gateway on :8077, independent DB, Argo embeddings, seeded to TDAI parity:
 ~4,231 L0->Stream, ~554 L1->Atoms, 7 scenes, persona->Core). **TDAI remains the only live
 production runtime** throughout. A weekly parity/cutover cron (fires 2026-06-29) reports
-TDAI-vs-STRATUS parity plus distiller tier output from both hosts as the cutover decision
+TDAI-vs-Falda parity plus distiller tier output from both hosts as the cutover decision
 input.
 
-**Migration rule (hard):** TDAI->STRATUS cutover must be a **planned restart, never a
+**Migration rule (hard):** TDAI->Falda cutover must be a **planned restart, never a
 hot-swap**. The shadow dual-run is a deliberately reversible, evidence-gated experiment on
 isolated ports/DBs; TDAI stays canonical until a deliberate cutover.
 
@@ -202,7 +202,7 @@ in parallel. UMP augments; it does not replace.
                        └───────────────┬──────────────────────────────┘
                                        │  shadow dual-run (parity-gated, reversible)
                        ┌───────────────▼──────────────────────────────┐
-   planned successor -> │  STRATUS (born-clean, US-origin)              │
+   planned successor -> │  Falda (born-clean, US-origin)              │
                        │  same 4-layer model + (tenant,pool) isolation │
                        │  -> scales to 1,000 agents (ingest/distill/agg)│
                        └───────────────┬──────────────────────────────┘
@@ -218,8 +218,8 @@ in parallel. UMP augments; it does not replace.
                        └────────────────────────────────────────────────┘
 ```
 
-- **Per-agent depth** comes from TDAI today (and STRATUS tomorrow): each agent's own L0->L3.
-- **Cross-agent breadth** comes from UMP today and the STRATUS **swarm tier** at scale: the
+- **Per-agent depth** comes from TDAI today (and Falda tomorrow): each agent's own L0->L3.
+- **Cross-agent breadth** comes from UMP today and the Falda **swarm tier** at scale: the
   `cohort`/`all` scope and the aggregator make one agent's knowledge queryable by the fleet.
 - **Verifiability** comes from the file-backed bottom layer: anything important is also on
   disk in a human-readable form an agent can re-check rather than trust.
@@ -235,9 +235,9 @@ paid or foreign dependency in the memory path.
 | Component | State |
 |---|---|
 | TDAI runtime (CherryRd + m1) | **LIVE / canonical.** sqlite backend, ~46 MB vectors.db, ~42 KB persona, 6+ scene blocks per host. |
-| STRATUS repo | Public (Apache-2.0), born-clean (`git grep tdai`==0), 13/13 smoke; Ollie steward; multi-tenant `(tenant,pool)` design approved. |
-| STRATUS shadow dual-run | **Running on both hosts** (m1 launchd gateway+tap+distiller; CherryRd gateway :8077), seeded to TDAI parity, capturing. Reversible. |
-| Parity/cutover gate | Weekly cron fires **2026-06-29 09:00** with TDAI-vs-STRATUS parity + distiller tiers as cutover input. |
+| Falda repo | Public (Apache-2.0), born-clean (`git grep tdai`==0), 13/13 smoke; Ollie steward; multi-tenant `(tenant,pool)` design approved. |
+| Falda shadow dual-run | **Running on both hosts** (m1 launchd gateway+tap+distiller; CherryRd gateway :8077), seeded to TDAI parity, capturing. Reversible. |
+| Parity/cutover gate | Weekly cron fires **2026-06-29 09:00** with TDAI-vs-Falda parity + distiller tiers as cutover input. |
 | 1,000-agent spec | Complete; technology choices locked; next step is Phase-0 stand-up. |
 | UMP | Public reference repo live (schema, prompts, docs, secret-pointer policy). |
 
@@ -260,6 +260,6 @@ public repo; execute the planned-restart cutover only after the 2026-06-29 parit
 ---
 
 *Artifacts referenced: ARCHITECTURE_BRIEF.md · SYSTEM-SPEC-1000-AGENTS.md ·
-SCALE-1000-AGENTS-PLAN.md · US-REBUILD-MIGRATION-PLAN.md · STRATUS decks
-(STRATUS.pptx / STRATUS_System / STRATUS_Scaling) · tdai-memory-system.pptx ·
+SCALE-1000-AGENTS-PLAN.md · US-REBUILD-MIGRATION-PLAN.md · Falda decks
+(Falda.pptx / Falda_System / Falda_Scaling) · tdai-memory-system.pptx ·
 ump-memory/docs/record-schema.md.*

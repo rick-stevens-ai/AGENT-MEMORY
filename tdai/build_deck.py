@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Agent memory + cross-agent stack deck — GEANT4-deck visual style.
 Dark navy theme, cyan/green/amber accents, card layout, 16pt floor on body text.
-Covers: TDAI/STRATUS memory, Sibline bus, UMP, harness integration.
+Covers: TDAI/Falda memory, Sibline bus, UMP, harness integration.
 Palette copied verbatim from scripts/build_geant4dna_deck.py per Rick (2026-06-23)."""
 
 from pptx import Presentation
@@ -73,7 +73,7 @@ def title(slide, text, sz=33):
 
 def footer(slide, n, total=16):
     txt(slide, Inches(0.7), Inches(7.08), Inches(9), Inches(0.32),
-        [{"t": "Agent memory + cross-agent stack · TDAI / STRATUS · Sibline · UMP",
+        [{"t": "Agent memory + cross-agent stack · TDAI / Falda · Sibline · UMP",
           "sz": 9, "c": GREY, "font": "Consolas"}])
     txt(slide, Inches(11.7), Inches(7.08), Inches(1.3), Inches(0.32),
         [{"t": f"{n:02d}/{total}", "sz": 9, "c": GREY, "font": "Consolas",
@@ -118,7 +118,7 @@ box(s, Inches(0.92), Inches(4.6), Inches(3.0), Pt(3), fill=ACCENT2)
 txt(s, Inches(0.9), Inches(4.85), Inches(11.7), Inches(1.2),
     [{"segs": [
         {"t": "Memory  ", "sz": 17, "b": True, "c": ACCENT2},
-        {"t": "(TDAI · STRATUS · UMP)   ", "sz": 16, "c": LIGHT},
+        {"t": "(TDAI \u2192 Falda \u00b7 UMP)   ", "sz": 16, "c": LIGHT},
         {"t": "Bus  ", "sz": 17, "b": True, "c": ACCENT},
         {"t": "(Sibline)   ", "sz": 16, "c": LIGHT},
         {"t": "Integration  ", "sz": 17, "b": True, "c": WARN},
@@ -130,9 +130,9 @@ txt(s, Inches(0.9), Inches(6.7), Inches(11), Inches(0.4),
 s = s_new(); kicker(s, "In one look", ACCENT2); accent_bar(s, ACCENT2)
 title(s, "The whole stack, in three parts")
 cards = [
-    ("MEMORY", "Layered per-agent memory (L0\u2192L3). TDAI is live & authoritative; STRATUS is the clean US rebuild running shadow. UMP + vault hold shared facts.", ACCENT),
+    ("MEMORY", "Layered per-agent memory (T0\u2192T3). Falda is the born-clean US-origin four-tier engine becoming the primary, migrated from the older TDAI runtime. UMP + vault hold shared facts.", ACCENT),
     ("BUS", "Sibline \u2014 a NATS/JetStream broker \u2014 carries realtime agent\u2194agent messages. One stable v1 subject contract, both directions symmetric.", ACCENT2),
-    ("INTEGRATION", "A documented, replication-grade recipe plugs either harness (Hermes / OpenClaw) into STRATUS \u2014 stand it up + verify from scratch.", WARN),
+    ("INTEGRATION", "A documented, replication-grade recipe plugs either harness (Hermes / OpenClaw) into Falda \u2014 stand it up + verify from scratch.", WARN),
 ]
 x = Inches(0.7); w = Inches(3.85); gap = Inches(0.18)
 for i,(h,b,col) in enumerate(cards):
@@ -148,7 +148,7 @@ title(s, "Two agents, one family")
 card(s, Inches(0.7), Inches(1.8), Inches(5.55), Inches(3.6), "KUKLA",
      "Harness: Hermes (Python)\nHost: m1-mac-mini\nRuns the Sibline broker\n@Rick_KuklaBot", PURPLE, body_sz=18)
 card(s, Inches(7.08), Inches(1.8), Inches(5.55), Inches(3.6), "OLLIE",
-     "Harness: OpenClaw (Node/TS)\nHost: CherryRd\nRuns STRATUS gateway + tap\n@RickOllie_bot", ACCENT, body_sz=18)
+     "Harness: OpenClaw (Node/TS)\nHost: CherryRd\nRuns Falda gateway + tap\n@RickOllie_bot", ACCENT, body_sz=18)
 chip(s, Inches(5.55), Inches(3.35), Inches(2.2), "ONE HUMAN: RICK", ACCENT2)
 txt(s, Inches(0.7), Inches(5.7), Inches(12), Inches(1.0),
     [{"segs":[{"t":"Shared substrate:  ","sz":16,"b":True,"c":ACCENT},
@@ -162,8 +162,8 @@ rows = [
     ("Native (Hermes / OpenClaw)", "per-agent working memory, injected every turn", "PRIVATE", GREY),
     ("Memory vault", "shared cold tier \u2014 markdown cards, read on demand", "SHARED", ACCENT),
     ("UMP", "shared structured store \u2014 36k MCP-exposed cards", "SHARED", PURPLE),
-    ("TDAI  (L0\u2192L3)", "the live system \u2014 injects context every turn", "AUTHORITATIVE", ACCENT2),
-    ("STRATUS  (T0\u2192T3)", "born-clean US rebuild of TDAI \u2014 captures only", "SHADOW", WARN),
+    ("Falda  (T0\u2192T3)", "born-clean US four-tier engine \u2014 becoming primary", "PRIMARY", ACCENT2),
+    ("TDAI  (L0\u2192L3)", "legacy live runtime \u2014 migrating from", "RETIRING", WARN),
 ]
 y = Inches(1.8)
 for name, job, tag, col in rows:
@@ -178,8 +178,8 @@ for name, job, tag, col in rows:
 footer(s, 4)
 
 # ============ 5 TDAI L0->L3 ============
-s = s_new(); kicker(s, "Memory · TDAI", ACCENT2); accent_bar(s, ACCENT2)
-title(s, "TDAI: the four-layer pipeline (live)")
+s = s_new(); kicker(s, "Memory · TDAI (legacy)", ACCENT2); accent_bar(s, ACCENT2)
+title(s, "TDAI: the four-layer pipeline (migrating from)")
 stages = [
     ("L0", "Stream", "every turn\ncaptured raw", GREY),
     ("L1", "Atoms", "LLM-extracted\nfacts / prefs / rules", ACCENT),
@@ -200,20 +200,20 @@ for i,(tag,name,body,col) in enumerate(stages):
 txt(s, Inches(0.7), Inches(5.25), Inches(12), Inches(1.3),
     [{"segs":[{"t":"Distiller","sz":16,"b":True,"c":ACCENT2},
       {"t":" walks L0\u2192L3 on free Argo LLMs. Storage = SQLite + FTS5 + sqlite-vec. ","sz":16,"c":LIGHT},
-      {"t":"Authoritative today","sz":16,"b":True,"c":ACCENT2},
-      {"t":" \u2014 it injects the right memory into every turn.","sz":16,"c":LIGHT}]}])
+      {"t":"The reference design","sz":16,"b":True,"c":ACCENT2},
+      {"t":" \u2014 the Falda engine inherits its tier model and ships the go-forward implementation.","sz":16,"c":LIGHT}]}])
 footer(s, 5)
 
-# ============ 6 STRATUS SHADOW ============
-s = s_new(); kicker(s, "Memory · STRATUS", WARN); accent_bar(s, WARN)
-title(s, "STRATUS: the born-clean US rebuild")
+# ============ 6 FALDA PRIMARY ============
+s = s_new(); kicker(s, "Memory · Falda", ACCENT2); accent_bar(s, ACCENT2)
+title(s, "Falda: the born-clean US-origin engine")
 card(s, Inches(0.7), Inches(1.8), Inches(5.85), Inches(3.5), "What it is",
-     "Apache-2.0 rewrite of TDAI (T0\u2192T3 = L0\u2192L3).\nbetter-sqlite3 + sqlite-vec + FTS5.\nHTTP gateway on :8077.\nOllie maintains the repo.", ACCENT, body_sz=17)
-card(s, Inches(6.85), Inches(1.8), Inches(5.78), Inches(3.5), "Why shadow",
-     "Runs capture-only \u2014 does NOT inject.\nA STRATUS bug can't degrade the agents.\nTDAI stays authoritative during the dual-run.\nTap tails TDAI L0 \u2192 STRATUS /stream/add.", WARN, body_sz=17)
+     "Apache-2.0, US-origin reimplementation of the four-tier model (T0\u2192T3 = Stream / Atoms / Scenes / Core).\nbetter-sqlite3 + sqlite-vec + FTS5.\nHTTP gateway on :8077.\nPublic repo: github.com/rick-stevens-ai/falda.", ACCENT, body_sz=17)
+card(s, Inches(6.85), Inches(1.8), Inches(5.78), Inches(3.5), "Why it's the go-forward",
+     "Clean-room provenance (no carried-over code).\nSame tier semantics as TDAI \u2014 drop-in upgrade path.\nBecoming the primary memory provider; TDAI is the predecessor being migrated from.\nDual-run during cutover keeps risk low.", ACCENT2, body_sz=17)
 txt(s, Inches(0.7), Inches(5.6), Inches(12), Inches(1.1),
-    [{"segs":[{"t":"Safe by design:  ","sz":16,"b":True,"c":WARN},
-      {"t":"shadow now, promote to live later by flipping the memory provider \u2014 no risky big-bang cutover.","sz":16,"c":LIGHT}]}])
+    [{"segs":[{"t":"Cutover model:  ","sz":16,"b":True,"c":ACCENT2},
+      {"t":"run both engines side-by-side, then flip the memory provider to Falda \u2014 no risky big-bang switch.","sz":16,"c":LIGHT}]}])
 footer(s, 6)
 
 # ============ 7 UMP ============
@@ -228,13 +228,13 @@ txt(s, Inches(0.7), Inches(5.6), Inches(12), Inches(1.1),
       {"t":"shared, durable, structured facts both agents contribute to and read on demand \u2014 the cross-agent knowledge base.","sz":16,"c":LIGHT}]}])
 footer(s, 7)
 
-# ============ 8 MEMORY LANDSCAPE (auth vs shadow) ============
+# ============ 8 MEMORY LANDSCAPE (primary vs shared vs legacy) ============
 s = s_new(); kicker(s, "Memory", ACCENT); accent_bar(s)
-title(s, "Authoritative vs. shared vs. shadow")
+title(s, "Primary vs. shared vs. legacy")
 groups = [
-    ("AUTHORITATIVE", "injects into every turn", ["Native per-agent", "TDAI (L0\u2192L3)"], ACCENT2),
+    ("PRIMARY", "go-forward recall path", ["Native per-agent", "Falda (T0\u2192T3)"], ACCENT2),
     ("SHARED", "read on demand", ["Memory vault", "UMP (36k cards)"], PURPLE),
-    ("SHADOW", "captures, never injects", ["STRATUS (T0\u2192T3)"], WARN),
+    ("LEGACY", "migrating from", ["TDAI (L0\u2192L3)"], WARN),
 ]
 x = Inches(0.7); w = Inches(3.85); gap = Inches(0.18); t = Inches(1.8); h = Inches(3.7)
 for i,(head,sub,items,col) in enumerate(groups):
@@ -248,7 +248,7 @@ for i,(head,sub,items,col) in enumerate(groups):
         [{"t": "\u2022  "+it, "sz": 17, "c": LIGHT, "space_after": 8} for it in items])
 txt(s, Inches(0.7), Inches(5.75), Inches(12), Inches(1.0),
     [{"segs":[{"t":"The invariant:  ","sz":16,"b":True,"c":ACCENT},
-      {"t":"only authoritative systems touch the live recall path; shadow + shared are isolated from it.","sz":16,"c":LIGHT}]}])
+      {"t":"only the primary path touches live recall; shared tiers are read on demand and the legacy engine is being phased out.","sz":16,"c":LIGHT}]}])
 footer(s, 8)
 
 # ============ 9 SIBLINE BROKER ============
@@ -330,11 +330,11 @@ footer(s, 12)
 
 # ============ 13 HARNESS INTEGRATION ============
 s = s_new(); kicker(s, "Integration", WARN); accent_bar(s, WARN)
-title(s, "Plugging a harness into STRATUS")
+title(s, "Plugging a harness into Falda")
 stages = [
     ("Harness", "Hermes / OpenClaw", ACCENT),
-    ("Tap", "L0 \u2192 /stream/add", ACCENT),
-    ("Gateway", "STRATUS :8077", ACCENT2),
+    ("Tap", "T0 \u2192 /stream/add", ACCENT),
+    ("Gateway", "Falda :8077", ACCENT2),
     ("Store", "SQLite + vec", WARN),
 ]
 x = Inches(0.7); w = Inches(2.75); gap = Inches(0.45); t = Inches(1.95); h = Inches(1.7)
@@ -347,7 +347,7 @@ for i,(name,body,col) in enumerate(stages):
         [{"t": body, "sz": 16, "c": LIGHT, "font": "Consolas"}])
     if i<3: arrow(s, lx+w+Inches(0.04), t+Inches(0.6))
 card(s, Inches(0.7), Inches(4.0), Inches(5.85), Inches(2.0), "Two modes",
-     "SHADOW \u2014 tap captures + validates, NOT in recall path (safe dual-run)\nLIVE \u2014 STRATUS becomes the memory provider (one config flip)", ACCENT, body_sz=16)
+     "DUAL-RUN \u2014 tap captures + validates alongside TDAI during cutover\nPRIMARY \u2014 Falda is the memory provider (one config flip away)", ACCENT, body_sz=16)
 card(s, Inches(6.85), Inches(4.0), Inches(5.78), Inches(2.0), "Replication-grade",
      "deploy/launchd/*.template (REPLACE_ME tokens) + deploy/nats/\nNumbered INSTALL order ends in a ping\u2192pong verify step", WARN, body_sz=16)
 footer(s, 13)
@@ -358,15 +358,15 @@ title(s, "The deploy kit \u2014 stand it up from scratch")
 box(s, Inches(0.7), Inches(1.85), Inches(7.4), Inches(4.3), fill=CARD)
 box(s, Inches(0.7), Inches(1.85), Pt(5), Inches(4.3), fill=ACCENT)
 txt(s, Inches(1.0), Inches(2.1), Inches(7.0), Inches(3.9),
-    [{"t":"stratus/","sz":17,"b":True,"c":WHITE,"font":"Consolas","space_after":4},
+    [{"t":"falda/","sz":17,"b":True,"c":WHITE,"font":"Consolas","space_after":4},
      {"t":"  docs/HARNESS_INTEGRATION.md","sz":16,"c":ACCENT2,"font":"Consolas","space_after":4},
      {"t":"  KUKLA_DELTA.md","sz":16,"c":LIGHT,"font":"Consolas","space_after":4},
      {"t":"  deploy/nats/","sz":16,"c":WHITE,"font":"Consolas","space_after":4},
      {"t":"    nats-server.conf.template","sz":16,"c":LIGHT,"font":"Consolas","space_after":4},
      {"t":"    create-streams.sh","sz":16,"c":LIGHT,"font":"Consolas","space_after":4},
      {"t":"  deploy/launchd/","sz":16,"c":WHITE,"font":"Consolas","space_after":4},
-     {"t":"    com.example.stratus-gateway.template","sz":16,"c":LIGHT,"font":"Consolas","space_after":4},
-     {"t":"    com.example.stratus-tap-openclaw.template","sz":16,"c":LIGHT,"font":"Consolas","space_after":4},
+     {"t":"    com.example.falda-gateway.template","sz":16,"c":LIGHT,"font":"Consolas","space_after":4},
+     {"t":"    com.example.falda-tap-openclaw.template","sz":16,"c":LIGHT,"font":"Consolas","space_after":4},
      {"t":"    com.example.nats-subscriber.template","sz":16,"c":LIGHT,"font":"Consolas"}])
 card(s, Inches(8.35), Inches(1.85), Inches(4.28), Inches(4.3), "All tokenized",
      "Every secret / path is a REPLACE_ME_* token.\n\nNo operator-specific values.\n\nA stranger replaces the tokens, runs the INSTALL order, and verifies with ping\u2192pong.", ACCENT2, body_sz=16)
@@ -376,7 +376,7 @@ footer(s, 14)
 s = s_new(); kicker(s, "Status", ACCENT2); accent_bar(s, ACCENT2)
 title(s, "What's green right now")
 checks = [
-    ("STRATUS gateway /healthz", "ok \u2014 tiers: stream / atoms / scenes / core / pools", ACCENT2),
+    ("Falda gateway /healthz", "ok \u2014 tiers: stream / atoms / scenes / core / pools", ACCENT2),
     ("Origin-clean guard", "0 breaches repo-wide", ACCENT2),
     ("Sibline ping\u2192pong", "PASS both directions, dual-witness", ACCENT2),
     ("Broker streams", "3 present, correct durable-consumer filters", ACCENT2),
@@ -400,8 +400,8 @@ box(s, Inches(0.28), 0, Inches(0.06), SH, fill=ACCENT)
 txt(s, Inches(0.9), Inches(0.7), Inches(11), Inches(0.8),
     [{"t": "SUMMARY", "sz": 16, "b": True, "c": ACCENT2, "font": "Consolas"}])
 txt(s, Inches(0.9), Inches(1.6), Inches(11.7), Inches(5.0),
-    [{"t":"\u2022  TDAI \u2014 live four-layer (L0\u2192L3) memory with auto-recall; authoritative today.","sz":20,"c":LIGHT,"space_after":14},
-     {"t":"\u2022  STRATUS \u2014 born-clean US rebuild (T0\u2192T3), runs shadow, Ollie-maintained.","sz":20,"c":LIGHT,"space_after":14},
+    [{"t":"\u2022  Falda \u2014 born-clean US-origin four-tier (T0\u2192T3) engine becoming the primary memory provider.","sz":20,"c":LIGHT,"space_after":14},
+     {"t":"\u2022  TDAI \u2014 the legacy four-layer (L0\u2192L3) runtime being migrated from; same tier semantics, clean handoff.","sz":20,"c":LIGHT,"space_after":14},
      {"t":"\u2022  Two agents (Kukla/Hermes + Ollie/OpenClaw), one human, separate identities.","sz":20,"c":LIGHT,"space_after":14},
      {"t":"\u2022  Sibline \u2014 NATS/JetStream realtime bus; symmetric, dual-witness validated.","sz":20,"c":LIGHT,"space_after":14},
      {"t":"\u2022  UMP + vault \u2014 shared structured / cold memory, read on demand.","sz":20,"c":LIGHT,"space_after":14},
